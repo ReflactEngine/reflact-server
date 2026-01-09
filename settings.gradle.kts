@@ -1,1 +1,1 @@
-rootProject.name = "reflect-server"
+rootProject.name = "reflact-server"

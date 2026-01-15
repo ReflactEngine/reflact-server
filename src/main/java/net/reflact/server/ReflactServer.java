@@ -16,7 +16,7 @@ import net.reflact.engine.ReflactEngine;
 public class ReflactServer {
     public static void main(String[] args) {
         // Initialize the server with Online Mode
-        MinecraftServer minecraftServer = MinecraftServer.init();
+        MinecraftServer minecraftServer = MinecraftServer.init(new Auth.Online());
         
         // Initialize our engine
         ReflactEngine.init();
@@ -52,7 +52,8 @@ public class ReflactServer {
             }
         }, "Console-Thread").start();
 
-        System.out.println("Starting server on port 25565...");
+        System.out.println("Starting server on port 25565 (Online Mode Enabled)...");
+        System.out.println("Tip: Use 'rank <username> ADMIN' in this console to grant yourself permissions.");
         minecraftServer.start("0.0.0.0", 25565);
     }
 }

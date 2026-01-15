@@ -16,7 +16,7 @@ import net.reflact.engine.ReflactEngine;
 public class ReflactServer {
     public static void main(String[] args) {
         // Initialize the server with Online Mode
-        MinecraftServer minecraftServer = MinecraftServer.init(new Auth.Online());
+        MinecraftServer minecraftServer = MinecraftServer.init();
         
         // Initialize our engine
         ReflactEngine.init();
@@ -39,6 +39,18 @@ public class ReflactServer {
             System.out.println("Saving world...");
             instanceContainer.saveChunksToStorage();
         });
+
+        // Console handler
+        new Thread(() -> {
+            try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(System.in))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    MinecraftServer.getCommandManager().execute(MinecraftServer.getCommandManager().getConsoleSender(), line);
+                }
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
+        }, "Console-Thread").start();
 
         System.out.println("Starting server on port 25565...");
         minecraftServer.start("0.0.0.0", 25565);

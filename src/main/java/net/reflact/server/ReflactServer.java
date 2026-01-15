@@ -13,10 +13,16 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.Auth;
 import net.reflact.engine.ReflactEngine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ReflactServer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReflactServer.class);
+
     public static void main(String[] args) {
         // Initialize the server with Online Mode
-        MinecraftServer minecraftServer = MinecraftServer.init(new Auth.Online());
+        MinecraftServer minecraftServer = MinecraftServer.init();
+        net.minestom.server.extras.MojangAuth.init();
         
         // Initialize our engine
         ReflactEngine.init();
@@ -36,7 +42,7 @@ public class ReflactServer {
 
         // Shutdown hook to save chunks
         MinecraftServer.getSchedulerManager().buildShutdownTask(() -> {
-            System.out.println("Saving world...");
+            LOGGER.info("Saving world...");
             instanceContainer.saveChunksToStorage();
         });
 
@@ -45,6 +51,7 @@ public class ReflactServer {
             try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(System.in))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
+                    if (line.trim().isEmpty()) continue;
                     MinecraftServer.getCommandManager().execute(MinecraftServer.getCommandManager().getConsoleSender(), line);
                 }
             } catch (java.io.IOException e) {
@@ -52,8 +59,8 @@ public class ReflactServer {
             }
         }, "Console-Thread").start();
 
-        System.out.println("Starting server on port 25565 (Online Mode Enabled)...");
-        System.out.println("Tip: Use 'rank <username> ADMIN' in this console to grant yourself permissions.");
+        LOGGER.info("Starting server on port 25565 (Online Mode Enabled)...");
+        LOGGER.info("Tip: Use 'rank <username> ADMIN' in this console to grant yourself permissions.");
         minecraftServer.start("0.0.0.0", 25565);
     }
 }

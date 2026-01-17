@@ -21,8 +21,7 @@ public class ReflactServer {
 
     public static void main(String[] args) {
         // Initialize the server with Online Mode
-        MinecraftServer minecraftServer = MinecraftServer.init();
-        net.minestom.server.extras.MojangAuth.init();
+        MinecraftServer minecraftServer = MinecraftServer.init(new Auth.Online());
         
         // Initialize our engine
         ReflactEngine.init();

@@ -45,7 +45,14 @@ public class ReflactServer {
             instanceContainer.saveChunksToStorage();
         });
 
-        // Console handler
+        // Initialize Server Console
+        if (!java.awt.GraphicsEnvironment.isHeadless()) {
+            new net.reflact.server.gui.ServerConsole().start();
+        } else {
+            LOGGER.info("Headless environment detected. GUI Console disabled.");
+        }
+
+        // Console handler (stdin fallback)
         new Thread(() -> {
             try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(System.in))) {
                 String line;

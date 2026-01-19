@@ -37,6 +37,9 @@ public class ReflactServer {
       final Player player = event.getPlayer();
       event.setSpawningInstance(instanceContainer);
       player.setRespawnPoint(new Pos(0, 42, 0));
+      
+      // Register channels so client knows it can send packets
+      ReflactEngine.getNetworkManager().onPlayerConfiguration(player);
     });
 
     // Shutdown hook to save chunks
@@ -44,6 +47,9 @@ public class ReflactServer {
       LOGGER.info("Saving world...");
       instanceContainer.saveChunksToStorage();
     });
+    
+    // Spawn NPCs
+    ReflactEngine.getNpcManager().spawnAll(instanceContainer);
 
     // Initialize Server Console
     if (!java.awt.GraphicsEnvironment.isHeadless()) {

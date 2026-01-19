@@ -1,0 +1,1 @@
+[{"id":"intro_quest","name":"Welcome to Reflact","description":["Learn the basics."],"stages":[{"description":"Talk to the Guide again.","type":"TALK","target":"guide","count":0}]}]

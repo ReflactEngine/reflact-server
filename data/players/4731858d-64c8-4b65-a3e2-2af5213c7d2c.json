@@ -3,6 +3,37 @@
   "username": "Remgr",
   "rank": "OWNER",
   "isBuildMode": false,
+  "selectedClass": "MAGE",
+  "attributes": {
+    "modifiers": {
+      "walk_speed": [
+        {
+          "id": "base",
+          "value": 0.1,
+          "operation": "ADD_NUMBER"
+        }
+      ],
+      "mana": [
+        {
+          "id": "base",
+          "value": 100.0,
+          "operation": "ADD_NUMBER"
+        }
+      ],
+      "health": [
+        {
+          "id": "base",
+          "value": 100.0,
+          "operation": "ADD_NUMBER"
+        }
+      ]
+    }
+  },
   "currentMana": 100.0,
-  "accessories": {}
+  "spellSlots": {
+    "1": "fireball",
+    "2": "heal"
+  },
+  "accessories": {},
+  "quests": {}
 }

@@ -2,7 +2,6 @@
   "name": "Fireball",
   "mana_cost": 10.0,
   "cooldown": 1000,
-  "combo": ["RIGHT", "LEFT", "RIGHT"],
   "effects": [
     {
       "type": "projectile",

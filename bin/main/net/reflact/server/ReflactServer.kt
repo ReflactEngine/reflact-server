@@ -1,6 +1,7 @@
 package net.reflact.server
 
 import net.minestom.server.MinecraftServer
+import net.minestom.server.Auth
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
 import net.minestom.server.instance.anvil.AnvilLoader
@@ -11,6 +12,8 @@ import net.reflact.engine.ReflactEngine
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.awt.GraphicsEnvironment
+import net.reflact.server.gui.ServerConsole
 import kotlin.concurrent.thread
 
 object ReflactServer {
@@ -19,8 +22,7 @@ object ReflactServer {
     @JvmStatic
     fun main(args: Array<String>) {
         // Initialize the server
-        val minecraftServer = MinecraftServer.init()
-        MojangAuth.init() // Online Mode - might be enabled by default or via config in this version
+        val minecraftServer = MinecraftServer.init(Auth.Online())
 
         // Initialize our engine
         ReflactEngine.init()
@@ -29,7 +31,7 @@ object ReflactServer {
         // Use AnvilLoader for persistence. 'world' is the folder name.
         val instanceContainer = instanceManager.createInstanceContainer(AnvilLoader("world"))
         instanceContainer.setGenerator { unit -> unit.modifier().fillHeight(0, 40, Block.GRASS_BLOCK) }
-        // instanceContainer.setChunkSupplier { LightingChunk(it) } // API changed, often default or different
+        instanceContainer.setChunkSupplier(::LightingChunk)
 
         val globalEventHandler = MinecraftServer.getGlobalEventHandler()
         globalEventHandler.addListener(AsyncPlayerConfigurationEvent::class.java) { event ->
@@ -44,12 +46,19 @@ object ReflactServer {
         // Shutdown hook to save chunks
         MinecraftServer.getSchedulerManager().buildShutdownTask {
             LOGGER.info("Saving world...")
-            instanceContainer.saveChunksToStorage()
+            instanceContainer.saveChunksToStorage().join()
         }
 
         // Spawn NPCs
         // NpcManager.spawnAll logic needs to be implemented or accessed correctly if added
         ReflactEngine.getNpcManager().spawnNpcs(instanceContainer)
+
+        // Initialize Server Console
+        if (!GraphicsEnvironment.isHeadless()) {
+            ServerConsole().start()
+        } else {
+            LOGGER.info("Headless environment detected. GUI Console disabled.")
+        }
 
         // Console handler (stdin fallback)
         thread(name = "Console-Thread") {
